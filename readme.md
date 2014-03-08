@@ -22,6 +22,23 @@ If you use encryption your backup will also be compressed.
 ## Install
 Open the file "config.php" and configure it to fit your needs.
 
-Start Backuper2 with following command:
+Enter all databases you want to backup under 'backup > databases > mysql > databases'.
 
- php /path/to/start.php
+Then enter all directories and folders under 'backup > data'. Do not delete the 'driver' option!
+
+If you want to encrypt your backup, fill in the absolute path to you public key at 'encrypt > public_key'. If you
+don't want to encrypt it, delete the encrypt-section from the config.php.
+
+Then head to the storages-section to configure where you want to save your backup.
+
+For Bitcasa you will need to register your app at https://developer.bitcasa.com/admin/applications. Then you have
+to generate a long-life access-token manually and enter it under 'storages > bitcasa > access_token'. After that
+specify the path where you want to store your backup. Read the documentation from Bitcasa because the foldernames
+look a bit spezial. Like this, for example:
+
+    /FOPqySw3ToK_25y-gagUfg/Nf6MVO4mRjiqpqz9RiEm2A
+
+Then start Backuper2 with following command:
+
+    php /path/to/start.php
+
