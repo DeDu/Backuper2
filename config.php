@@ -1,0 +1,45 @@
+<?php
+
+
+return [
+    // Where to store the backup:
+    'storages' => [
+        'bitcasa'   =>  [
+            // Check https://developer.bitcasa.com/docs
+            'driver'            => 'BitcasaStore',
+            'access_token'      =>  'YOUR_ACCESS_TOKEN',
+            'base_backup_path'  => 'BITCASA-PATH' // The Path where the Backup will be generated
+        ]
+    ],
+    // What to store in the backup:
+    'backup'  =>  [
+        // Databases to store:
+        'databases'     =>  [
+            'driver'    =>  'DatabaseBackup',
+            'mysql'     =>  [
+                'user'      => 'MYSQL-USERNAME',
+                'password'  => 'MYSQL-PASSWORD',
+
+                'databases' => [
+                    'backuptest', // Replace with the databases you want to backup
+                    'blog',
+                ]
+            ]
+        ],
+        // Files to backup
+        'data'     => [
+            'driver'    => 'DataBackup',
+            '/tmp/', // Replace with the folders and files you want to backup
+            '/tmp/tmp',
+        ]
+    ],
+    // Encrypt the backup:
+    'encrypt'   => [
+        'driver'        => 'OpenSSLEncypter',
+        'public_key'    => '/path/to/key.cert',
+    ],
+    // Cache directory:
+    'cache_dir' => __DIR__ . '/cache',
+    // Log directory
+    'log_dir'   => __DIR__ . '/log'
+];
