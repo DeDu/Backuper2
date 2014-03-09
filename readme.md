@@ -24,10 +24,13 @@ Open the file "config.php" and configure it to fit your needs.
 
 Enter all databases you want to backup under 'backup > databases > mysql > databases'.
 
-Then enter all directories and folders under 'backup > data'. Do not delete the 'driver' option!
+Then enter all directories and folders under 'backup > data'. Do not delete the 'driver' option! All folders and files
+will get archived and compressed. If you enable encryption, those archives will get archived and compressed again in
+a single file.
 
 If you want to encrypt your backup, fill in the absolute path to you public key at 'encrypt > public_key'. If you
-don't want to encrypt it, delete the encrypt-section from the config.php.
+don't want to encrypt it, delete the encrypt-section from the config.php. Checkout this post to learn how to
+decrypt your backup with your private key: http://stackoverflow.com/a/12233688/2115253
 
 Then head to the storages-section to configure where you want to save your backup.
 
