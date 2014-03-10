@@ -23,25 +23,27 @@ class OpenSSLEncypter implements EncryptInterface {
     {
         if (is_file($this->config['public_key'])) {
             $files = glob($this->path . '/*');
-            $files = implode(' ', $files);
+            //$files = implode(' ', $files);
+            $key = file_get_contents($this->config['public_key']);
 
-            $backupfile = $this->path . '/backup.tar.gz';
-            $backupfileencrypted = $this->path . '/backup.tar.gz.enc';
+            foreach ($files as $file) {
+                $this->logger->logInfo("Encrypt file: $file");
+                $encryptonSuccessfull = openssl_pkcs7_encrypt(
+                    $file,
+                    $file . ".enc",
+                    $key,
+                    [],
+                    PKCS7_BINARY,
+                    OPENSSL_CIPHER_AES_256_CBC);
 
-            $cmd = "tar -zcf $backupfile -P $files";
-            $this->logger->logInfo("Creating archive with command: $cmd");
-            exec($cmd);
+                if ($encryptonSuccessfull) {
+                    $this->logger->logInfo("Delete uncrypted file from cache: $file");
+                    unlink($file);
+                } else {
+                    $this->logger->logError("Encryption failed for file: $file");
+                }
+            }
 
-            $cmd = "rm $files";
-            $this->logger->logInfo("Removing archived files with command: $cmd");
-            exec($cmd);
-
-            $cmd = "openssl smime -encrypt -binary -aes-256-cbc -in $backupfile -out $backupfileencrypted -outform DER " . $this->config['public_key'];
-            $this->logger->logInfo("Removing archived files with command: $cmd");
-            exec($cmd);
-
-            $this->logger->logInfo("Removing uncrypted archive.");
-            unlink($backupfile);
         } else {
             $this->logger->logError('Can not find public key to enrypt.');
         }
