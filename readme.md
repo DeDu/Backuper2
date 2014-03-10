@@ -1,6 +1,8 @@
 # Backuper2
 Backuper2 is a small PHP-Programm which makes backups and stores them where ever you want.
 
+It's currently under development and should not be used.
+
 It is easy to configure and to extend.
 
 ## Backup
