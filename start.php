@@ -5,6 +5,7 @@ require_once("vendor/KLogger.php");
 
 function __autoload($className) {
     $paths = [
+        __DIR__ . "/src",
         __DIR__ . "/src/backups",
         __DIR__ . "/src/encryption",
         __DIR__ . "/src/storages",

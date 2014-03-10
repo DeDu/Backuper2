@@ -11,12 +11,12 @@ return [
             'base_backup_path'  => 'BITCASA-PATH' // The Path where the Backup will be generated
         ],
         'local'     =>  [
-            'driver'            => 'LocalStorage',
+            'driver'            => 'LocalStore',
             'localPath'         => '/path/to/local/dir',
         ]
     ],
     // What to store in the backup:
-    'backup'  =>  [
+    'backup'        =>  [
         // Databases to store:
         'databases'     =>  [
             'driver'    =>  'DatabaseBackup',

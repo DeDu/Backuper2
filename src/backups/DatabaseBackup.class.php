@@ -38,7 +38,14 @@ class DatabaseBackup implements BackupInterface {
         foreach ($config['databases'] as $db) {
             $cmd = "mysqldump -u " . $config['user'] . " -p" . $config['password'] . " " . $db . " > " . $this->path . "/DB_MySQL_" . $db . ".sql";
             $this->logger->logInfo("Dump MySQL-Database '$db' with command: $cmd");
-            exec($cmd);
+
+            $output = "";
+            $returnVar = "";
+            exec($cmd, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                $this->logger->logError('Command failed: ' . $cmd);
+            }
         }
     }
 }
