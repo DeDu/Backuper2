@@ -6,7 +6,7 @@
  * Time: 18:45
  */
 
-interface DriverInterface {
+interface BackupInterface {
     function __construct($path, $config, $logger);
     public function doBackup();
 } 

@@ -6,7 +6,7 @@
  * Time: 18:32
  */
 
-class DatabaseBackup implements DriverInterface{
+class DatabaseBackup implements BackupInterface {
     private $config;
     private $path;
     private $logger;

@@ -30,10 +30,10 @@ class Backuper {
         foreach ($this->config['backup'] as $key => $driverconfig) {
             if (isset($driverconfig['driver'])) {
                 $driver = new $driverconfig['driver']($this->config['cache_dir'], $driverconfig, $this->logger);
-                if ($driver instanceof DriverInterface) {
+                if ($driver instanceof BackupInterface) {
                     $driver->doBackup();
                 } else {
-                    $this->logger->logError("Driver must implement DriverInterface!");
+                    $this->logger->logError("Driver must implement BackupInterface!");
                 }
             } else {
                 $this->logger->logWarn("No driver configured under {$key}. Ignoring.");
