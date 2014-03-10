@@ -18,11 +18,24 @@ class Backuper {
 
     public function startBackup()
     {
+        $this->prepare();
         $this->generateData();
         $this->enctyptData();
         $this->storeData();
 
         $this->cleanup();
+    }
+
+    private function prepare()
+    {
+        // Make sure cache-folder exists:
+        if (!is_dir($this->config['cache_dir'])) {
+            if (! mkdir($this->config['cache_dir'], 0777, true) ) {
+                $error = "Can't create cache-directory: " . $this->config['cache_dir'];
+                $this->logger->logFatal($error);
+                throw new Exception($error);
+            }
+        }
     }
 
     private function generateData()
