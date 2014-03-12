@@ -9,4 +9,5 @@
 interface EncryptInterface {
     function __construct($path, $config, $logger);
     public function doEncrypt();
-} 
+    public function doDecrypt();
+}

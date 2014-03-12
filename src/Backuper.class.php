@@ -26,6 +26,25 @@ class Backuper {
         $this->cleanup();
     }
 
+    public function startDecrypt($keyfile, $pathtofiles)
+    {
+        if (isset($this->config['encrypt']) AND isset($this->config['encrypt']['driver'])) {
+            $this->logger->logInfo("Going to decrypt.");
+
+            $this->config['encrypt']['private_key'] = $keyfile;
+
+            $driver = $this->config['encrypt']['driver'];
+            $driver = new $driver($pathtofiles, $this->config['encrypt'], $this->logger);
+            if ($driver instanceof EncryptInterface) {
+                $driver->doDecrypt();
+            } else {
+                $this->logger->logError("Driver must implement EncryptInterface!");
+            }
+        } else {
+            $this->logger->logInfo("Do NOT decrypt. Nothing is specified in config.");
+        }
+    }
+
     private function prepare()
     {
         // Make sure cache-folder exists:
