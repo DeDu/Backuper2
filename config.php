@@ -39,7 +39,7 @@ return [
     ],
     // Encrypt the backup:
     'encrypt'   => [
-        'driver'        => 'OpenSSLEncypter',
+        'driver'        => 'PublicKeyEncrypter',
         'public_key'    => '/path/to/key.cert',
     ],
     // Cache directory:
