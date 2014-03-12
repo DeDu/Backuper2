@@ -1,7 +1,4 @@
 <?php
-
-
-
 require_once("vendor/BitcasaClient.php");
 require_once("vendor/KLogger.php");
 
@@ -24,7 +21,8 @@ function __autoload($className) {
 $config = (include("config.php"));
 $backuper = new Backuper($config, new KLogger($config['log_dir'], KLogger::INFO));
 
-switch ($argv[1]) {
+$mode = isset($argv[1]) ? $argv[1] : "";
+switch ($mode) {
     case 'decrypt':
         $backuper->startDecrypt($argv[3], $argv[2]);
         break;

@@ -26,8 +26,10 @@ class DataBackup implements BackupInterface {
                 $name = basename($path);
             } else if (is_file($path)) {
                 $name = pathinfo($path)['filename'];
+            } else {
+                $this->logger->logError("Path is not a file or folder: " . $path);
             }
-            $tmppath = $this->path . "/archive_$name.tar.gz";
+            $tmppath = $this->path . "/archive_$name.tar";
 
             // Make filename unique:
             $counter = 1;
@@ -36,9 +38,16 @@ class DataBackup implements BackupInterface {
                 $counter++;
             }
 
-            $cmd = "tar -zcf " . $tmppath . " -P $path";
-            $this->logger->logInfo("Creating archive from '$path' with command: $cmd");
-            exec($cmd);
+            $this->logger->logInfo("Creating archive from '$path'.");
+            $arch = new PharData($tmppath);
+            if (is_dir($path)) {
+                $arch->buildFromDirectory($path);
+            } else {
+                $arch->addFile($path);
+            }
+            $arch->compress(Phar::GZ);
+            unset($arch);
+            unlink($tmppath);
         }
     }
 }

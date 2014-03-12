@@ -6,7 +6,7 @@
  * Time: 18:32
  */
 
-class PublicKeyEncypter implements EncryptInterface {
+class PublicKeyEncrypter implements EncryptInterface {
     private $config;
     private $path;
     private $logger;
@@ -31,18 +31,22 @@ class PublicKeyEncypter implements EncryptInterface {
                 $this->logger->logInfo("Encrypt file: $file");
                 // IV:
                 $iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);
-                $this->logger->logInfo("Encrypt iv : " .bin2hex($iv));
                 // Create new random Key:
                 $key = openssl_random_pseudo_bytes(32);
-                $this->logger->logInfo("Encrypt key: " .bin2hex($key));
                 // Encrypt:
-                $encryptedData = mcrypt_encrypt(
-                    MCRYPT_RIJNDAEL_256,
-                    $key,
-                    file_get_contents($file),
-                    MCRYPT_MODE_CBC,
-                    $iv);
-                file_put_contents($file . ".enc.data", $encryptedData);
+                $fileStream = fopen($file, "r");
+                $encFileStream = fopen($file . ".enc.data", "w");
+
+                $opts = [
+                    'iv' => $iv,
+                    'key' => $key,
+                    'mode' => 'cbc'
+                ];
+                stream_filter_append($encFileStream, 'mcrypt.rijndael-256', STREAM_FILTER_WRITE, $opts);
+                stream_copy_to_stream($fileStream, $encFileStream);
+
+                fclose($fileStream);
+                fclose($encFileStream);
                 // Encrypt random generated key and save it:
                 $encryptedKey = null;
                 openssl_public_encrypt($key, $encryptedKey, $publickey);
@@ -78,14 +82,29 @@ class PublicKeyEncypter implements EncryptInterface {
                 $key = file_get_contents($basePath . '.key');
                 $decryptedKey = null;
                 openssl_private_decrypt($key, $decryptedKey, $privateKey);
-                // Encrypt:
-                $decryptedData = mcrypt_decrypt(
+                // Decrypt:
+                $fileStream = fopen($savePath, "w");
+                $encFileStream = fopen($file, "r");
+
+                $opts = [
+                    'iv' => $iv,
+                    'key' => $decryptedKey,
+                    'mode' => 'cbc'
+                ];
+                stream_filter_append($encFileStream, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
+                stream_copy_to_stream($encFileStream, $fileStream);
+
+                fclose($fileStream);
+                fclose($encFileStream);
+
+
+                /*$decryptedData = mcrypt_decrypt(
                     MCRYPT_RIJNDAEL_256,
                     $decryptedKey,
                     file_get_contents($file),
                     MCRYPT_MODE_CBC,
                     $iv);
-                file_put_contents($savePath, $decryptedData);
+                file_put_contents($savePath, $decryptedData);*/
             }
 
         } else {
