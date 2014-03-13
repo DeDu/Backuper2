@@ -16,37 +16,49 @@ Following storages are supported:
 - Local
 
 ## Security
-Backuper2 can encrypt your backup with a public key before it transform it to the storages.
+Backuper2 can encrypt your backup with a public key before it transport it to the storages.
 
-It does that wit OpenSSL/Mcrypt and needs the key in the pem-format.
+It does that wit OpenSSL/Mcrypt and needs the public key in the pem-format.
+
+You can decrypt your backup with the `decrypt` command of Backuper2.
 
 ## Install
-Open the file "config.php" and configure it to fit your needs.
+First downlaod Backuper2 from here: https://github.com/DeDu/Backuper2/raw/master/bin/backuper2.phar
 
-Enter all databases you want to backup under 'backup > databases > mysql > databases'.
+To install Backuper2 globally on a linux machine use this command:
 
-Then enter all directories and folders under 'backup > data'. Do not delete the 'driver' option! All folders and files
+	mv backuper2.phar /usr/local/bin/backuper2
+
+Then make sure that Backuper2 is executable.
+
+Get a copy of the file `config.php` from https://github.com/DeDu/Backuper2/raw/master/config.php and configure it to fit your needs:
+
+Enter all databases you want to backup under `backup > databases > mysql > databases`.
+
+Then enter all directories and folders under `backup > data`. Do not delete the `driver` option! All folders and files
 will get archived and compressed.
 
-If you want to encrypt your backup, fill in the absolute path to you public key at 'encrypt > public_key'. If you
-don't want to encrypt it, delete the encrypt-section from the config.php.
+If you want to encrypt your backup, fill in the absolute path to you public key at `encrypt > public_key`. If you
+don't want to encrypt it, delete the encrypt-section from your `config.php`.
 
 Then head to the storages-section to configure where you want to save your backup.
 
 For Bitcasa you will need to register your app at https://developer.bitcasa.com/admin/applications. Then you have
 to generate a long-life access-token manually and enter it under 'storages > bitcasa > access_token'. After that
-specify the path where you want to store your backup. Read the documentation from Bitcasa because the foldernames
-look a bit spezial. Like this, for example:
+specify the path where you want to store your backup. Read the documentation from Bitcasa because the folder names
+are a bit special. Like this, for example:
 
     /FOPqySw3ToK_25y-gagUfg/Nf6MVO4mRjiqpqz9RiEm2A
 
-Then start Backuper2 with following command:
+## Commands
+To get a full list of commands run `backuper2 --help` if you have Backuper2 installed globally. Otherwise use `backuper2.phar --help`.
 
-    php /path/to/start.php
+To make the backup:
 
-## Decrypt backup
-Us this command to decrypt your backup:
+	backuper2 -c /path/to/config.php backup
 
-    php /path/to/start.php decrypt /path/to/backup/dir/ /path/to/private_key.key
+To decrypt a backup made with Backuper2:
+
+	backuper2 -c /path/to/config.php -k /path/to/private_key.key decrypt /path/to/backup/directory
 
 You will find your decrypted files in the same directory as the enrypted ones.
