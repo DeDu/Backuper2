@@ -43,7 +43,7 @@ return [
         'public_key'    => '/path/to/key.cert',
     ],
     // Cache directory:
-    'cache_dir' => __DIR__ . '/cache',
+    'cache_dir' => getcwd() . '/cache',
     // Log directory
-    'log_dir'   => __DIR__ . '/log'
+    'log_dir'   => getcwd() . '/log'
 ];

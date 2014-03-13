@@ -27,7 +27,9 @@ class DataBackup implements BackupInterface {
             } else if (is_file($path)) {
                 $name = pathinfo($path)['filename'];
             } else {
-                $this->logger->logError("Path is not a file or folder: " . $path);
+                $msg = "Path is not a file or folder: " . $path;
+                $this->logger->logError($msg);
+                throw new Exception($msg);
             }
             $tmppath = $this->path . "/archive_$name.tar";
 
