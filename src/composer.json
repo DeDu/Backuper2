@@ -1,0 +1,9 @@
+{
+    "require": {
+        "nategood/commando": "0.2.*"
+    },
+
+    "autoload": {
+        "classmap": ["backups/", "encryption/", "storages/", "helpers/", "Backuper.class.php"]
+    }
+}
