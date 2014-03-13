@@ -1,0 +1,8 @@
+/src/vendor
+.DS_Store
+
+config_private.php
+.vagrant/
+Vagrantfile
+bootstrap.sh
+key/key.key
