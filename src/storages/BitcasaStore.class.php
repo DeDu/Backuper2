@@ -16,6 +16,10 @@ class BitcasaStore implements StoreInterface {
         $this->path = $path;
         $this->config = $config;
         $this->logger = $logger;
+
+        // defaults:
+        $defaultConfig = ['dir_prefix' => 'Backup_'];
+        $this->config = array_merge($defaultConfig, $this->config);
     }
 
 
@@ -38,7 +42,7 @@ class BitcasaStore implements StoreInterface {
         //Create folder on Bitcasa:
         $datestring = date("YmdHi");
         /** @var BitcasaFolder $backupFolder */
-        $backupFolder = $client->createFolder($this->config['base_backup_path'], "Server_" . $datestring);
+        $backupFolder = $client->createFolder($this->config['base_backup_path'], $this->config['dir_prefix'] . $datestring);
 
 
         // Dateien darin hochladen:

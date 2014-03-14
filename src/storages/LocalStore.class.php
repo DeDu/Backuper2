@@ -16,6 +16,10 @@ class LocalStore implements StoreInterface {
         $this->path = $path;
         $this->config = $config;
         $this->logger = $logger;
+
+        // defaults:
+        $defaultConfig = ['dir_prefix' => 'Backup_'];
+        $this->config = array_merge($defaultConfig, $this->config);
     }
 
 
@@ -23,7 +27,16 @@ class LocalStore implements StoreInterface {
     {
         $localPath = $this->config['localPath'];
         $datestring = date("YmdHi");
-        $localPath = $localPath . "/Backup_" . $datestring;
+        $localPath = $localPath . "/" . $this->config['dir_prefix'] . $datestring;
+
+        // use unique directory:
+        $tmpLocalPath = $localPath;
+        $counter = 1;
+        while (is_dir($tmpLocalPath) OR is_file($tmpLocalPath)) {
+            $tmpLocalPath = $localPath . '_' . $counter;
+            $counter++;
+        }
+        $localPath = $tmpLocalPath;
 
         // create this dir:
         if (! mkdir($localPath, 0777, true) ) {

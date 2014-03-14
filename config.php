@@ -8,10 +8,12 @@ return [
             // Check https://developer.bitcasa.com/docs
             'driver'            => 'BitcasaStore',
             'access_token'      =>  'YOUR_ACCESS_TOKEN',
-            'base_backup_path'  => 'BITCASA-PATH' // The Path where the Backup will be generated
+            'base_backup_path'  => 'BITCASA-PATH', // The Path where the Backup will be generated
+            'dir_prefix'        => 'Backup_',
         ],
         'local'     =>  [
             'driver'            => 'LocalStore',
+            'dir_prefix'        => 'Backup_',
             'localPath'         => '/path/to/local/dir',
         ]
     ],
