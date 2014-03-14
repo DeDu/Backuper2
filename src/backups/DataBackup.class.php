@@ -27,29 +27,40 @@ class DataBackup implements BackupInterface {
             } else if (is_file($path)) {
                 $name = pathinfo($path)['filename'];
             } else {
-                $msg = "Path is not a file or folder: " . $path;
+                $msg = "Path is not a file or folder. Skipping: " . $path;
                 $this->logger->logError($msg);
-                throw new Exception($msg);
+                continue;
             }
             $tmppath = $this->path . "/archive_$name.tar";
 
             // Make filename unique:
             $counter = 1;
             while (is_file($tmppath)) {
-                $tmppath = $this->path . "/archive_$name$counter.tar.gz";
+                $tmppath = $this->path . "/archive_$name$counter.tar";
                 $counter++;
             }
 
             $this->logger->logInfo("Creating archive from '$path'.");
             $arch = new PharData($tmppath);
-            if (is_dir($path)) {
-                $arch->buildFromDirectory($path);
-            } else {
-                $arch->addFile($path);
+            try {
+                if (is_dir($path)) {
+                    $arch->buildFromDirectory($path);
+                } else {
+                    $arch->addFile($path);
+                }
+                try {
+                    $arch->compress(Phar::GZ);
+                    unset($arch);
+                    if (file_exists($tmppath)) {
+                        // Can not exist when directory $path was empty.
+                        unlink($tmppath);
+                    }
+                } catch (BadMethodCallException $e) {
+                    $this->logger->logError("Can't compress. zlib extension is not available, or the bzip2 extension is not enabled in php.");
+                }
+            } catch (PharException $e) {
+                $this->logger->logError($e->getMessage());
             }
-            $arch->compress(Phar::GZ);
-            unset($arch);
-            unlink($tmppath);
         }
     }
 }
