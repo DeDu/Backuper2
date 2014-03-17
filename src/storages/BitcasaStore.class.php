@@ -48,8 +48,16 @@ class BitcasaStore implements StoreInterface {
         // Dateien darin hochladen:
         foreach (glob($this->path . "/*") as $file) {
             if (is_file($file)) {
-                $this->logger->logInfo('Upload file to Bitcasa: ' . $file);
-                $backupFolder->upload($client, $file);
+                try {
+                    $this->logger->logInfo('Upload file to Bitcasa: ' . $file);
+                    $backupFolder->upload($client, $file);
+                } catch (BitcasaException $e) {
+                    $this->logger->logError($e->getMessage());
+                    $this->logger->logError("Following file was not uploaded: " . $file);
+                } catch (HttpException $e) {
+                    $this->logger->logError($e->getMessage());
+                    $this->logger->logError("Following file was not uploaded: " . $file);
+                }
             }
         }
     }
