@@ -34,7 +34,7 @@ try {
     $arguments  = $cmd->getArgumentValues();
 
     $config = (include($flags['c']));
-    $logger = new KLogger($config['log_dir'], KLogger::INFO);
+    $logger = new KLoggerWraper($config['log_dir'], KLogger::INFO);
     $backuper = new Backuper($config, $logger);
 
     switch ($arguments[0]) {
