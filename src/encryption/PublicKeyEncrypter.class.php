@@ -43,7 +43,7 @@ class PublicKeyEncrypter implements EncryptInterface {
                     'mode' => 'cbc'
                 ];
                 stream_filter_append($encFileStream, 'mcrypt.rijndael-256', STREAM_FILTER_WRITE, $opts);
-                stream_copy_to_stream($fileStream, $encFileStream);
+                stream_copy_to_stream($fileStream, $encFileStream, 1024);
 
                 fclose($fileStream);
                 fclose($encFileStream);
