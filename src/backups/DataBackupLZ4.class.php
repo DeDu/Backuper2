@@ -86,10 +86,20 @@ class DataBackupLZ4 implements BackupInterface {
             $compressedfile = fopen($compressedfilepath, "w");
             $tarfile = fopen($file, "r");
 
-            stream_copy_to_stream($tarfile, $pipes[0], 1024);
+            $size = 0;
+            while (!feof($tarfile)) {
+                //$size += fwrite($pipes[0],fread($tarfile, 8192));
+                $size += stream_copy_to_stream($tarfile, $pipes[0], 1024);
+                $this->logger->logInfo("round. written: $size --- mem: " . memory_get_usage());
+            }
             fclose($tarfile);
             fclose($pipes[0]);
-            stream_copy_to_stream($pipes[1], $compressedfile, 1024);
+            $size = 0;
+            while (!feof($pipes[1])) {
+                //$size += fwrite($compressedfile,fread($pipes[1], 8192));
+                $size += stream_copy_to_stream($pipes[1], $compressedfile, 1024);
+                $this->logger->logInfo("round2. written: $size");
+            }
             fclose($pipes[1]);
             fclose($compressedfile);
 
