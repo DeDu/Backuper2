@@ -77,25 +77,22 @@ class DataBackupLZ4 implements BackupInterface {
         $descriptorspec = array(
             0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
             1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-            //2 => array("file", "/tmp/error-output.txt", "a") // stderr is a file to write to
+            2 => array("file", "/tmp/error-output.txt", "a") // stderr is a file to write to
         );
         $cwd = '/tmp';
-        $process = proc_open('lz4 -c', $descriptorspec, $pipes, $cwd);
-        $compressedfile = fopen($compressedfilepath, "w");
-        $tarfile = fopen($file, "r");
+        $process = proc_open('lz4', $descriptorspec, $pipes, $cwd);
 
         if (is_resource($process)) {
-            $this->logger->logInfo("Tar to LZ4");
-            //stream_copy_to_stream($tarfile, $pipes[0]);
-            fwrite($pipes[0], "asdf");
-            fclose($pipes[0]);
+            $compressedfile = fopen($compressedfilepath, "w");
+            $tarfile = fopen($file, "r");
+
+            stream_copy_to_stream($tarfile, $pipes[0], 1024);
             fclose($tarfile);
-            $this->logger->logInfo("LZ4 in File");
-            stream_copy_to_stream($pipes[1], $compressedfile);
+            fclose($pipes[0]);
+            stream_copy_to_stream($pipes[1], $compressedfile, 1024);
             fclose($pipes[1]);
             fclose($compressedfile);
 
-            $this->logger->logInfo("LZ4 DOne.");
             $return_value = proc_close($process);
             if ($return_value !== 0) {
                 throw new LZ4Exception("Compression Failed. LZ4 Error Code: $return_value");
