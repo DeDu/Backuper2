@@ -72,44 +72,6 @@ class DataBackupLZ4 implements BackupInterface {
     private function compressLZ4($file)
     {
         $this->logger->logInfo("Going to compress: $file");
-        $compressedfilepath = $file . ".lz4";
-
-        $descriptorspec = array(
-            0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-            1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-            2 => array("file", "/tmp/error-output.txt", "a") // stderr is a file to write to
-        );
-        $cwd = '/tmp';
-        $process = proc_open('lz4', $descriptorspec, $pipes, $cwd);
-
-        if (is_resource($process)) {
-            $compressedfile = fopen($compressedfilepath, "w");
-            $tarfile = fopen($file, "r");
-
-            $size = 0;
-            while (!feof($tarfile)) {
-                //$size += fwrite($pipes[0],fread($tarfile, 8192));
-                $size += stream_copy_to_stream($tarfile, $pipes[0], 1024);
-                $this->logger->logInfo("round. written: $size --- mem: " . memory_get_usage());
-            }
-            fclose($tarfile);
-            fclose($pipes[0]);
-            $size = 0;
-            while (!feof($pipes[1])) {
-                //$size += fwrite($compressedfile,fread($pipes[1], 8192));
-                $size += stream_copy_to_stream($pipes[1], $compressedfile, 1024);
-                $this->logger->logInfo("round2. written: $size");
-            }
-            fclose($pipes[1]);
-            fclose($compressedfile);
-
-            $return_value = proc_close($process);
-            if ($return_value !== 0) {
-                throw new LZ4Exception("Compression Failed. LZ4 Error Code: $return_value");
-            }
-        } else {
-            throw new LZ4Exception("Wasn't able to execute LZ4.");
-        }
-
+        return LZ4::compress($file);
     }
 }
