@@ -72,6 +72,7 @@ class IncrementalDataBackupLZ4 implements BackupInterface {
                 $args .= " --level=0";
             }
             $cmd = "tar $args $path   > /dev/null 2>&1";
+            $this->logger->logInfo("Execute command: " . $cmd);
             exec($cmd, $output, $return);
             unset($output);
 
