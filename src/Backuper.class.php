@@ -55,6 +55,13 @@ class Backuper {
                 throw new Exception($error);
             }
         }
+        // Empty the cache-folder:
+        $files = glob($this->config['cache_dir'] . '/*'); // get all file names
+        foreach($files as $file){
+            if(is_file($file)){
+                unlink($file);
+            }
+        }
     }
 
     private function generateData()
