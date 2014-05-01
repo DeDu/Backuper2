@@ -60,7 +60,7 @@ class SFTPStore implements StoreInterface {
         foreach (glob($this->path . "/*") as $file) {
             if (is_file($file)) {
                 $thisStream = $stream . basename($file);
-                $ret = file_put_contents($thisStream, $file);
+                $ret = file_put_contents($thisStream, file_get_contents($file));
                 if ($ret === false){
                     $this->logger->logWarn("Failed to transfer file over SFTP: " . $file);
                 }
