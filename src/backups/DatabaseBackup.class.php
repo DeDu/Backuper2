@@ -36,16 +36,32 @@ class DatabaseBackup implements BackupInterface {
     private function dumpMysql($config)
     {
         foreach ($config['databases'] as $db) {
-            $cmd = "mysqldump -u " . $config['user'] . " -p" . $config['password'] . " " . $db . " > " . $this->path . "/DB_MySQL_" . $db . ".sql";
+            $path = $this->path . "/DB_MySQL_" . $db . ".sql";
+            $cmd = "mysqldump -u " . $config['user'] . " -p" . $config['password'] . " " . $db . " > $path";
             $this->logger->logInfo("Dump MySQL-Database '$db' with command: $cmd");
 
             $output = "";
             $returnVar = "";
             exec($cmd, $output, $returnVar);
+            unset($output);
 
             if ($returnVar !== 0) {
                 $this->logger->logError('Command failed: ' . $cmd);
+            } else {
+                if (isset($config['compression'])) {
+                    switch ($config['compression']) {
+                        case "LZ4":
+                            try {
+                                LZ4::compress($path);
+                                unlink($path);
+                            } catch (LZ4Exception $e) {
+                                $this->logger->logError($e->getMessage());
+                            }
+                            break;
+                    }
+                }
             }
+
         }
     }
 }

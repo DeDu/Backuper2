@@ -56,7 +56,9 @@ try {
 
             break;
         default:
+            $logger->logInfo("Start backup.");
             $backuper->startBackup();
+            $logger->logInfo("Done.");
             break;
     }
 } catch (Exception $e) {
