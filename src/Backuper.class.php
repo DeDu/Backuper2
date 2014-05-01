@@ -92,17 +92,27 @@ class Backuper {
 
     private function storeData()
     {
+        $exceptions = [];
         foreach ($this->config['storages'] as $key => $driverconfig) {
             if (isset($driverconfig['driver'])) {
                 $driver = new $driverconfig['driver']($this->config['cache_dir'], $driverconfig, $this->logger);
                 if ($driver instanceof StoreInterface) {
-                    $driver->store();
+                    try {
+                        $driver->store();
+                    } catch (Exception $e) {
+                        $this->logger->logWarn("Failed to store Backup in store: " . $driverconfig['driver']);
+                        array_push($exceptions, $e);
+                    }
                 } else {
                     $this->logger->logError("Driver must implement StoreInterface!");
                 }
             } else {
                 $this->logger->logWarn("No driver configured under {$key}. Ignoring.");
             }
+        }
+        if (!empty($exceptions)) {
+            $e = array_shift($exceptions);
+            throw $e;
         }
     }
 
