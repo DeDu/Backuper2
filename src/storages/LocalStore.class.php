@@ -26,7 +26,6 @@ class LocalStore implements StoreInterface {
     public function store()
     {
         $this->logger->logInfo("Start move Backup local.");
-        throw new Exception("Craaaap!");
         $localPath = $this->config['localPath'];
         $datestring = date("YmdHi");
         $localPath = $localPath . "/" . $this->config['dir_prefix'] . $datestring;
